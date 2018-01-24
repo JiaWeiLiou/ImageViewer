@@ -22,6 +22,7 @@ void ImageViewer::initial()
 	/* set window's title*/
 	if (!fileName.isEmpty()) {
 		int pos1 = fileName.lastIndexOf('/');
+		filePath = fileName.left(pos1 + 1);							//檔案路徑
 		fileName =fileName.right(fileName.size() - pos1 - 1);		//檔案名稱
 		fileName = QString(tr(" - ")) + fileName;
 	}
@@ -40,6 +41,9 @@ void ImageViewer::initial()
 		minScale = scaleW < scaleH ? scaleW : scaleH;
 		scale = minScale;
 	}
+
+	/* clear imagePoints */
+	imagePoints.clear();
 }
 
 void ImageViewer::dragEnterEvent(QDragEnterEvent *event)
@@ -155,7 +159,7 @@ void ImageViewer::keyPressEvent(QKeyEvent *event)
 {
 	// press keyboard Enter to output points file
 	if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && imagePoints.size() > 4) {
-		QFile file("points.txt");
+		QFile file(filePath + "points.txt");
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
 			QTextStream out(&file);
 			out << dec << fixed;

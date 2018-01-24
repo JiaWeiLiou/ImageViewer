@@ -49,6 +49,7 @@ protected:
 private:
 	QImage img;				// store image
 	QString fileName;		// store image name
+	QString filePath;		// store image name
 	float maxScale = 0.0f;	// maximum scale
 	float minScale = 0.0f;	// minimun scale
 	float scale = 0.0f;		// scale to draw
