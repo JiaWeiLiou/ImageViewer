@@ -14,6 +14,8 @@
 #include <QPainter>
 #include <QPointF>
 #include <QVector>
+#include <QFile>
+#include <QTextStream>
 
 #define imgW (img.size().width())	// image width
 #define imgH (img.size().height())	// image height
@@ -45,8 +47,6 @@ private:
 	QPointF oldDelta;		// old displacement
 	QPointF pos1;			// mouse press position 1
 	QPointF pos2;			// mouse press position 2
-	bool enterKey = false;	// adjudge keyboard Enter pressed
-	bool escKey = false;	// adjudge keyboard ESC pressed
 	QVector<QPointF> imagePoints;	// record image points' pixel
 };
 

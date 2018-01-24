@@ -104,12 +104,19 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
 void ImageViewer::keyPressEvent(QKeyEvent *event)
 {
-	// press keyboard Enter to finish paint
-	if (event->key() == Qt::Key_Enter) {
-
+	// press keyboard Enter to output points file
+	if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && imagePoints.size() > 4) {
+		QFile file("points.txt");
+		if (file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+			QTextStream out(&file);
+			out << dec << fixed;
+			for (int i = 0; i < 4; ++i) {
+				out << imagePoints[i].x() << "\t" << imagePoints[i].y() << endl;
+			}
+			file.close();
+		}
 	// press keyboard Esc to give up setting point
 	} else if (event->key() == Qt::Key_Escape) {
-		escKey = true;
 		imagePoints.clear();	// clear points
 		update();
 	}
