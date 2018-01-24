@@ -3,18 +3,67 @@
 ImageViewer::ImageViewer(QWidget *parent)
 	: QWidget(parent)
 {
-	/* set maximum scale (maximum scale is 1/5 screen width)*/
-	maxScale = QApplication::desktop()->screenGeometry().width() / 5;	// set maximum scale
+	initial();
 
 	/* set widget*/
 	setWindowIcon(QIcon(":ImageViewer/Resources/icon.ico"));			// set program's icon
 	setMinimumSize(300, 300);											// set widget's minimum size
-	setWindowTitle(tr("Image Viewer"));									// set widget's title
 	setCursor(Qt::CrossCursor);											// set cursor to cross type
 	setMouseTracking(true);												// tracking mouse location
+	setAcceptDrops(true);												// set widget can be drop
 	//showMaximized();													// set widget to show max
-	img.load("test1.JPG");												// load image
-	
+}
+
+void ImageViewer::initial()
+{
+	/* set maximum scale (maximum scale is 1/5 screen width) */
+	maxScale = QApplication::desktop()->screenGeometry().width() / 5;	// set maximum scale
+
+	/* set window's title*/
+	if (!fileName.isEmpty()) {
+		int pos1 = fileName.lastIndexOf('/');
+		fileName =fileName.right(fileName.size() - pos1 - 1);		//ÀÉ®×¦WºÙ
+		fileName = QString(tr(" - ")) + fileName;
+	}
+	QString title = QString(tr("Image Viewer")) + fileName;
+	setWindowTitle(title);
+
+	/* calculate scale to show image */
+	float scaleW = (float)winW / (float)imgW;
+	float scaleH = (float)winH / (float)imgH;
+	// If the scale is to zoom in, keep scale to 1:1.
+	if (scaleW >= 1 && scaleH >= 1) {
+		scale = 1;
+		minScale = 1;
+	// If the scale is to zoom out and have been zoom in, adjudge below.
+	} else {
+		minScale = scaleW < scaleH ? scaleW : scaleH;
+		scale = minScale;
+	}
+}
+
+void ImageViewer::dragEnterEvent(QDragEnterEvent *event)
+{
+	if (event->mimeData()->hasFormat("text/uri-list")) {
+		event->acceptProposedAction();
+	}
+}
+
+void ImageViewer::dropEvent(QDropEvent *event)
+{
+	QList<QUrl> urls = event->mimeData()->urls();
+	if (urls.isEmpty()) {
+		return;
+	}
+
+	fileName = urls.first().toLocalFile();
+	if (fileName.isEmpty()) {
+		return;
+	}
+
+	img.load(fileName);		// load image
+	initial();				// reset parameter
+	update();
 }
 
 void ImageViewer::resizeEvent(QResizeEvent *event)

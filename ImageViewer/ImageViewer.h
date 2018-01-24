@@ -4,6 +4,9 @@
 #include <QtWidgets/QWidget>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
 #include <QIcon>
 #include <QCursor>
 #include <QImage>
@@ -14,8 +17,10 @@
 #include <QPainter>
 #include <QPointF>
 #include <QVector>
+#include <QString>
 #include <QFile>
 #include <QTextStream>
+
 
 #define imgW (img.size().width())	// image width
 #define imgH (img.size().height())	// image height
@@ -30,6 +35,9 @@ public:
 	ImageViewer(QWidget *parent = Q_NULLPTR);
 
 protected:
+	void initial();								// initial and rest widget
+	void dragEnterEvent(QDragEnterEvent *event);// drag event
+	void dropEvent(QDropEvent *event);			// drop event
 	void resizeEvent(QResizeEvent *event);		// window resize
 	void wheelEvent(QWheelEvent *event);		// wheel zoom in and out
 	void mousePressEvent(QMouseEvent *event);	// mouse press		(overload from QWidget)
@@ -40,6 +48,7 @@ protected:
 
 private:
 	QImage img;				// store image
+	QString fileName;		// store image name
 	float maxScale = 0.0f;	// maximum scale
 	float minScale = 0.0f;	// minimun scale
 	float scale = 0.0f;		// scale to draw
