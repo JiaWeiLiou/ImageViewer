@@ -204,7 +204,7 @@ void ImageViewer::paintEvent(QPaintEvent *event)
 	QPainter painter(this);
 
 	/* draw image */
-	QRectF rect(newDelta.x(), newDelta.y(), (imgW - 1) * scale, (imgH - 1) * scale);	// draw range
+	QRectF rect(newDelta.x() - 0.5 * scale, newDelta.y() - 0.5 * scale, imgW * scale, imgH * scale);	// draw range
 	painter.drawImage(rect, img);	// draw image
 
 	/* draw points and lines */
