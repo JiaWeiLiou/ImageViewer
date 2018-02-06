@@ -30,8 +30,8 @@ void ImageViewer::initial()
 	setWindowTitle(title);
 
 	/* calculate scale to show image */
-	float scaleW = (float)winW / (float)imgW;
-	float scaleH = (float)winH / (float)imgH;
+	float scaleW = (float)winW / (float)(imgW - 1);
+	float scaleH = (float)winH / (float)(imgH - 1);
 	// If the scale is to zoom in, keep scale to 1:1.
 	if (scaleW >= 1 && scaleH >= 1) {
 		scale = 1;
@@ -73,8 +73,8 @@ void ImageViewer::dropEvent(QDropEvent *event)
 void ImageViewer::resizeEvent(QResizeEvent *event)
 {
 	/* calculate scale to show image*/
-	float scaleW = (float)winW / (float)imgW;
-	float scaleH = (float)winH / (float)imgH;
+	float scaleW = (float)winW / (float)(imgW - 1);
+	float scaleH = (float)winH / (float)(imgH - 1);
 	// If the scale is to zoom in, keep scale to 1:1.
 	if (scaleW >= 1 && scaleH >= 1) {
 		scale = 1;
@@ -116,7 +116,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *event)
 		// change to image's pixel coordinate
 		QPointF imagePos = (QPointF(event->pos()) - newDelta) / scale;
 		// limit the point in the image
-		if (imagePos.x() >= 0 && imagePos.x() <= imgW && imagePos.y() >= 0 && imagePos.y() <= imgH) {
+		if (imagePos.x() >= 0 && imagePos.x() <= (imgW - 1) && imagePos.y() >= 0 && imagePos.y() <= (imgH - 1)) {
 			// record file.
 			imagePoints.push_back(imagePos);
 		}
@@ -137,7 +137,7 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event)
 		// change to image's pixel coordinate
 		QPointF imagePos = (QPointF(event->pos()) - newDelta) / scale;
 		// limit the point in the image
-		if (imagePos.x() >= 0 && imagePos.x() <= imgW && imagePos.y() >= 0 && imagePos.y() <= imgH) {
+		if (imagePos.x() >= 0 && imagePos.x() <= (imgW - 1) && imagePos.y() >= 0 && imagePos.y() <= (imgH - 1)) {
 			// record file.
 			imagePoints[imagePoints.size() - 1] = imagePos;
 		}
@@ -179,32 +179,32 @@ void ImageViewer::paintEvent(QPaintEvent *event)
 {
 	/* modify xDelta */
 	// If image's horizontal size to show is longer than winW, set it to center.
-	if (imgW * scale < winW) {
-		newDelta.rx() = winW / 2 - scale * imgW / 2;
+	if ((imgW - 1) * scale < winW) {
+		newDelta.rx() = winW / 2 - scale * (imgW - 1) / 2;
 	// If image's horizontal delta is less than winW, set it to edge.
 	} else if (newDelta.x() > 0) {
 		newDelta.rx() = 0;
 	// If image's horizontal delta is bigger than 0, set it to edge.
-	} else if (imgW * scale + newDelta.x() < winW) {
-		newDelta.rx() = winW - imgW * scale;
+	} else if ((imgW - 1) * scale + newDelta.x() < winW) {
+		newDelta.rx() = winW - (imgW - 1) * scale;
 	}
 
 	/* modify yDelta */
 	// If image's vertical size to show is longer than winW, set it to center.
-	if (imgH * scale < winH) {
-		newDelta.ry() = winH / 2 - scale * imgH / 2;
+	if ((imgH - 1) * scale < winH) {
+		newDelta.ry() = winH / 2 - scale * (imgH - 1) / 2;
 	// If image's vertical delta is less than winW, set it to edge.
 	} else if (newDelta.ry() > 0) {
 		newDelta.ry() = 0;
 	// If image's vertical delta is bigger than 0, set it to edge.
-	} else if (imgH * scale + newDelta.y() < winH) {
-		newDelta.ry() = winH - imgH * scale;
+	} else if ((imgH - 1) * scale + newDelta.y() < winH) {
+		newDelta.ry() = winH - (imgH - 1) * scale;
 	}
 
 	QPainter painter(this);
 
 	/* draw image */
-	QRectF rect(newDelta.x(), newDelta.y(), imgW * scale, imgH * scale);	// draw range
+	QRectF rect(newDelta.x(), newDelta.y(), (imgW - 1) * scale, (imgH - 1) * scale);	// draw range
 	painter.drawImage(rect, img);	// draw image
 
 	/* draw points and lines */
