@@ -58,6 +58,7 @@ private:
 	QPointF pos1;			// mouse press position 1
 	QPointF pos2;			// mouse press position 2
 	QVector<QPointF> imagePoints;	// record image points' pixel
+	bool outBorder;			// record point is out of border or not
 };
 
 #endif IMAGEVIEWER_H

@@ -119,8 +119,11 @@ void ImageViewer::mousePressEvent(QMouseEvent *event)
 		if (imagePos.x() >= 0 && imagePos.x() <= (imgW - 1) && imagePos.y() >= 0 && imagePos.y() <= (imgH - 1)) {
 			// record file.
 			imagePoints.push_back(imagePos);
+			outBorder = false;
+			update();
+		} else {
+			outBorder = true;
 		}
-		update();
 	}
 }
 
@@ -139,9 +142,16 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event)
 		// limit the point in the image
 		if (imagePos.x() >= 0 && imagePos.x() <= (imgW - 1) && imagePos.y() >= 0 && imagePos.y() <= (imgH - 1)) {
 			// record file.
-			imagePoints[imagePoints.size() - 1] = imagePos;
+			// mousePress points is out of border 
+			if (outBorder) {
+				imagePoints.push_back(imagePos);
+				outBorder = false;
+			// mousePress points isn't out of border 
+			} else {
+				imagePoints[imagePoints.size() - 1] = imagePos;
+			}
+			update();
 		}
-		update();
 	}
 }
 
