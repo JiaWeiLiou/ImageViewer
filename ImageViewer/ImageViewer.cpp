@@ -23,7 +23,7 @@ void ImageViewer::initial()
 	if (!fileName.isEmpty()) {
 		int pos1 = fileName.lastIndexOf('/');
 		filePath = fileName.left(pos1 + 1);							//檔案路徑
-		fileName =fileName.right(fileName.size() - pos1 - 1);		//檔案名稱
+		fileName = fileName.right(fileName.size() - pos1 - 1);		//檔案名稱
 		fileName = QString(tr(" - ")) + fileName;
 	}
 	QString title = QString(tr("Image Viewer")) + fileName;
@@ -169,13 +169,14 @@ void ImageViewer::keyPressEvent(QKeyEvent *event)
 {
 	// press keyboard Enter to output points file
 	if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return && imagePoints.size() > 4) {
-		QFile file(filePath + "points.txt");
+		QFile file(filePath + "//" + "IMG(PT).txt");
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
 			QTextStream out(&file);
 			out << dec << fixed;
 			for (int i = 0; i < 4; ++i) {
-				out << imagePoints[i].x() << "\t" << imagePoints[i].y() << endl;
+				out << imagePoints[i].x() << "\t" << imagePoints[i].y() << "\t";
 			}
+			out << endl;
 			file.close();
 		}
 	// press keyboard Esc to give up setting point
